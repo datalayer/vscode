@@ -140,7 +140,7 @@
     "yaml": "^2.9.1",
     "yjs": "^13.6.30",
     "zeromq": "^6.0.0-beta.20",
-    "zod": "4.3.6"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
