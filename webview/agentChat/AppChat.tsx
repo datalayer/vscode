@@ -10,7 +10,7 @@
  *
  * The conversation is `@datalayer/agent-runtimes`' `<Chat>` over the
  * runtime's session API — an AG-UI run on
- * `<kept runtime>/api/v1/apps/agents/<agent>/ag-ui/`, each thread a session
+ * `<always-on runtime>/api/v1/apps/agents/<agent>/ag-ui/`, each thread a session
  * (R-02), as the application's hosted page speaks to it. Every request goes
  * through the network bridge, which signs the ones the extension host lets
  * it with the person's token: the view never holds it.
@@ -107,7 +107,7 @@ export interface AppChatProps {
   callDocumentTool: CallDocumentTool;
   /**
    * A session of the application opened from the Sessions view (VS-24):
-   * its conversation is read by uid from the kept runtime.
+   * its conversation is read by uid from the always-on runtime.
    */
   openUid?: string;
   /**
@@ -475,7 +475,7 @@ export default function AppChat(props: AppChatProps): React.JSX.Element {
         <Chat
           protocol="ag-ui"
           // The session opened from the Sessions view (VS-24), read from
-          // the kept runtime by uid; the thread's menu beside the header.
+          // the always-on runtime by uid; the thread's menu beside the header.
           thread={
             openUid
               ? { id: openUid, messages: [], fromRuntime: true }

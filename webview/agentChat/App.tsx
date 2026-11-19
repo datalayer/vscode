@@ -8,7 +8,7 @@
  * Agent Chat sidebar application component.
  *
  * Renders an agent picker — the person's runtimes, and their deployed
- * applications kept always on (STUDIO A-18, talked to by `AppChat`) — then
+ * always-on applications (STUDIO A-18, talked to by `AppChat`) — then
  * lazy-loads the heavy `<Chat>` component from `@datalayer/agent-runtimes`
  * via `React.lazy` + `Suspense`. This keeps the initial bundle small
  * (~3 MiB) so the webview evaluates immediately; the Chat chunk (~16 MiB)
@@ -453,7 +453,7 @@ function AppInner(props: AppProps): React.JSX.Element {
   );
 
   // A session of a deployed application opened from the Sessions view
-  // (VS-24): its conversation read by uid on the kept runtime.
+  // (VS-24): its conversation read by uid on the always-on runtime.
   const openedApp =
     opened &&
     opened.place.kind !== "local" &&
@@ -494,7 +494,7 @@ function AppInner(props: AppProps): React.JSX.Element {
 
   // A runtime picked (not a session): its agents read from its own list,
   // once per pick — `default` on a runtime of the person's, the
-  // application's own on an application's kept runtime — and the one talked
+  // application's own on an application's always-on runtime — and the one talked
   // to spoken to on its own transport. Several: the person picks.
   const pickedRuntime = selectedAgent && !opened ? selectedAgent : null;
   const pickedRuntimeKey = pickedRuntime
@@ -700,7 +700,7 @@ function AppInner(props: AppProps): React.JSX.Element {
         <AgentRuntimesClientProvider client={client}>
           <LazyAppChat
             // A new conversation for each deployment picked, or when
-            // where it is kept changes; the same listing keeps it.
+            // its always-on runtime changes; the same listing keeps it.
             // A session opened from the Sessions view is another.
             key={`${selectedApp.uid} ${selectedApp.version} ${selectedApp.url} ${selectedApp.agentId} ${openedApp?.uid ?? ""}`}
             handle={selectedApp}
@@ -748,7 +748,7 @@ function AppInner(props: AppProps): React.JSX.Element {
             // A session's agent is its own (its application's agent);
             // otherwise the agent the runtime lists (`default` on a
             // runtime of the person's, the application's own on an
-            // application's kept runtime), never assumed. The pod
+            // application's always-on runtime), never assumed. The pod
             // identifier goes in `runtimeId` for telemetry.
             agentId={runtimeTalk.agentId}
             // The editor's theme, never the chat's own (Matrix).

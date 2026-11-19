@@ -57,7 +57,7 @@ const running = {
   slug: "support-desk",
   state: "live",
   always_on: true,
-  kept: {
+  always_on_record: {
     state: "running",
     url: "https://r1.datalayer.run/agent-runtimes/pool/pod-1/",
     agent_id: "support-desk-d1",
@@ -77,7 +77,7 @@ const item = (spec: Record<string, unknown>, revision = 3) => ({
 });
 
 describe("the picker's choices", () => {
-  it("talks to a deployment kept always on, on a running runtime", () => {
+  it("talks to an always-on deployment, on a running runtime", () => {
     const [choice] = deploymentChoicesOf({ deployments: [running] });
     expect(choice).toEqual({
       kind: "talk",
@@ -102,7 +102,10 @@ describe("the picker's choices", () => {
         {
           ...running,
           uid: "down",
-          kept: { state: "waiting", why: "Its computer could not be started." },
+          always_on_record: {
+            state: "waiting",
+            why: "Its computer could not be started.",
+          },
         },
         running,
         { nothing: true },
@@ -117,8 +120,8 @@ describe("the picker's choices", () => {
     const why = choices.flatMap((c) => (c.kind === "closed" ? [c.why] : []));
     expect(why).toEqual([
       "Support Desk is paused.",
-      "Support Desk is not kept always on, so no runtime holds its agent: turn on Always on in its Ship tab to talk to it here.",
-      "Support Desk is kept always on, but its runtime is not running: Its computer could not be started.",
+      "Support Desk is not always on, so no runtime holds its agent: turn on Always on in its Ship tab to talk to it here.",
+      "Support Desk is always on, but its runtime is not running: Its computer could not be started.",
     ]);
   });
 
@@ -426,7 +429,7 @@ describe("what the host signs with the person's token", () => {
     },
   );
 
-  it("signs the kept runtime, Tool Approvals and Spacer's items", () => {
+  it("signs the always-on runtime, Tool Approvals and Spacer's items", () => {
     for (const url of [
       "https://r1.datalayer.run/agent-runtimes/pool/pod-1/api/v1/apps/agents/a/ag-ui/",
       "https://r1.datalayer.run/api/ai-agents/v1/tool-approvals?agent_id=a&status=pending",
@@ -482,11 +485,11 @@ describe("the review of 2026-10-07: live only, the version said, a signed user s
     const closed = deploymentChoicesOf({
       deployments: [
         { ...running, uid: "p", state: "paused" },
-        { ...running, uid: "down", kept: { state: "stopped" } },
+        { ...running, uid: "down", always_on_record: { state: "stopped" } },
       ],
     });
     expect(noneTalkableSentence(closed)).toBe(
-      "None of your applications can be talked to here now: each one says why — paused, not kept always on, or its runtime not running.",
+      "None of your applications can be talked to here now: each one says why — paused, not always on, or its runtime not running.",
     );
     expect(
       noneTalkableSentence(deploymentChoicesOf({ deployments: [running] })),
@@ -502,8 +505,8 @@ describe("the review of 2026-10-07: live only, the version said, a signed user s
         {
           ...running,
           version: 4,
-          kept: {
-            ...running.kept,
+          always_on_record: {
+            ...running.always_on_record,
             url: "https://r1.datalayer.run/agent-runtimes/pool/pod-9",
             agent_id: "a9",
           },

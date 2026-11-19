@@ -39,7 +39,7 @@ describe("the agent talked to on a runtime picked", () => {
     });
   });
 
-  it("talks to the only agent of an application's kept runtime", () => {
+  it("talks to the only agent of an application's always-on runtime", () => {
     expect(
       runtimeAgentOf(
         {

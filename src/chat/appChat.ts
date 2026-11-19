@@ -11,8 +11,8 @@
  * Agent Chat sidebar and talks to it as its hosted page does: over the
  * runtime's session API, an AG-UI run on
  * `<runtime>/api/v1/apps/agents/<agent>/ag-ui/` whose thread is the session
- * (LOOP R-04, STUDIO R-02), on the runtime the deployment is kept on
- * (`kept.url`, `kept.agent_id`, R-33), with the person's own token. Its
+ * (LOOP R-04, STUDIO R-02), on the deployment's always-on runtime
+ * (`always_on_record.url`, `always_on_record.agent_id`, R-33), with the person's own token. Its
  * approvals (R-05) are the Tool Approvals of ai-agents, answered in the
  * view; its tool calls are said as the transcript's lines (A-06); the
  * editor's open file is what VS Code passes as the host's `page` (D-10),
@@ -45,9 +45,9 @@ export interface AppChatHandle {
   target: string;
   /** Its address, for a hosted one. */
   slug: string;
-  /** The runtime it is kept on (`kept.url`), without a trailing slash. */
+  /** Its always-on runtime (`always_on_record.url`), without a trailing slash. */
   url: string;
-  /** The agent the runtime made for it (`kept.agent_id`). */
+  /** The agent the runtime made for it (`always_on_record.agent_id`). */
   agentId: string;
 }
 
@@ -110,7 +110,7 @@ export const EDITOR_TEXT_LIMIT = 20_000;
 /**
  * The default of `datalayer.agentChat.enabled`: talking to a deployed
  * application's agent is on (since 0.1.1; 0.1.0 held it off until it had
- * had one pass against a deployment kept always on). Turned off, the
+ * had one pass against an always-on deployment). Turned off, the
  * sidebar lists no deployment, asks ai-agents nothing and never mounts
  * `AppChat`; its runtimes are as before.
  */
@@ -271,7 +271,7 @@ const texts = (value: unknown): string[] =>
 
 /**
  * A deployment as ai-agents answers it, offered in the picker: one live
- * (`state` exactly `live`), saying the version it runs, kept always on, on
+ * (`state` exactly `live`), saying the version it runs, always on, on
  * a running runtime is talked to; any other says why not, in a sentence —
  * nothing is guessed, a version least of all (what the deployed version
  * lets its host pass is read from it).
@@ -287,7 +287,7 @@ export function deploymentChoiceOf(raw: unknown): AppChatChoice | undefined {
     return undefined;
   }
   const name = text(deployment.app_name) || "This application";
-  const kept = record(deployment.kept);
+  const alwaysOnRecord = record(deployment.always_on_record);
   const closed = (why: string): AppChatChoice => ({
     kind: "closed",
     uid,
@@ -315,15 +315,15 @@ export function deploymentChoiceOf(raw: unknown): AppChatChoice | undefined {
   }
   if (deployment.always_on !== true) {
     return closed(
-      `${name} is not kept always on, so no runtime holds its agent: turn on Always on in its Ship tab to talk to it here.`,
+      `${name} is not always on, so no runtime holds its agent: turn on Always on in its Ship tab to talk to it here.`,
     );
   }
-  const url = text(kept.url);
-  const agentId = text(kept.agent_id);
-  if (kept.state !== "running" || !url || !agentId) {
-    const why = text(kept.why);
+  const url = text(alwaysOnRecord.url);
+  const agentId = text(alwaysOnRecord.agent_id);
+  if (alwaysOnRecord.state !== "running" || !url || !agentId) {
+    const why = text(alwaysOnRecord.why);
     return closed(
-      `${name} is kept always on, but its runtime is not running${why ? `: ${why}` : "."}`,
+      `${name} is always on, but its runtime is not running${why ? `: ${why}` : "."}`,
     );
   }
   return {
@@ -362,7 +362,7 @@ export function deploymentChoicesOf(body: unknown): AppChatChoice[] {
 /**
  * What the picker says when none of the person's applications can be talked
  * to: none deployed, or each closed for its own reason — paused, not live,
- * not kept always on, its runtime not running — said beside it.
+ * not always on, its runtime not running — said beside it.
  *
  * @param choices - The picker's choices.
  *
@@ -376,7 +376,7 @@ export function noneTalkableSentence(
   }
   return choices.length === 0
     ? "You have no deployed applications: ship one from the Studio's Ship tab to talk to it here."
-    : "None of your applications can be talked to here now: each one says why — paused, not kept always on, or its runtime not running.";
+    : "None of your applications can be talked to here now: each one says why — paused, not always on, or its runtime not running.";
 }
 
 /**
@@ -949,7 +949,7 @@ export function pendingApprovalsOf(
 
 /**
  * The URL prefixes the extension host signs with the person's token for
- * the view: the runtimes the person's deployments are kept on, ai-agents'
+ * the view: the always-on runtimes of the person's deployments, ai-agents'
  * Tool Approvals, and Spacer's items. Nothing else is given the token.
  *
  * @param handles - The deployments talked to.

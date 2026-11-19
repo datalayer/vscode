@@ -215,7 +215,7 @@ describe("datalayer.agentChat.enabled", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("on by default, lists the deployments; one not kept always on is closed, saying why", async () => {
+  it("on by default, lists the deployments; one not always on is closed, saying why", async () => {
     const { provider } = makeProvider();
     const { view, posted, send } = makeView();
     provider.resolveWebviewView(view as never);
@@ -235,7 +235,7 @@ describe("datalayer.agentChat.enabled", () => {
         kind: "closed",
         uid: "dep-1",
         name: "Support Desk",
-        why: "Support Desk is not kept always on, so no runtime holds its agent: turn on Always on in its Ship tab to talk to it here.",
+        why: "Support Desk is not always on, so no runtime holds its agent: turn on Always on in its Ship tab to talk to it here.",
       },
     ]);
   });

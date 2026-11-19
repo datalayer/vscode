@@ -41,7 +41,7 @@
  * (`deploymentChoicesOf`). The webview talks to one over its runtime's
  * session API; it never holds the person's token: the network bridge
  * lends it to the requests under the prefixes `signedPrefixesOf` gives —
- * the runtimes those deployments are kept on, ai-agents' Tool Approvals
+ * those deployments' always-on runtimes, ai-agents' Tool Approvals
  * and Spacer's items. The editor's open file is read only when the view
  * asks for it (`editor-context-request`), which it does when the
  * application's agent calls `host_context` and its Appspec lets it.
@@ -571,8 +571,8 @@ export class AgentChatViewProvider implements vscode.WebviewViewProvider {
 
   /**
    * Lists the person's deployments at ai-agents and posts them to the
-   * webview as `chat-deployments` (STUDIO A-18); the runtimes they are kept
-   * on become the prefixes the bridge signs.
+   * webview as `chat-deployments` (STUDIO A-18); their always-on runtimes
+   * become the prefixes the bridge signs.
    */
   private async refreshDeployments(): Promise<void> {
     const services = getValidatedSettingsGroup("services");

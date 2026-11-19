@@ -8,7 +8,7 @@
  * The agent the Datalayer Chat talks to on a runtime picked in its picker
  * (not a session): read from the runtime's own list (`GET /api/v1/agents`),
  * never assumed. A runtime of the person's has a `default` agent; an
- * application's kept runtime has only the application's (e.g.
+ * application's always-on runtime has only the application's (e.g.
  * `exchange-desk`), and asking it for `default` answers 404. The agent's own
  * transport is the protocol spoken to it.
  *
