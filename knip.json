@@ -41,7 +41,6 @@
     "@lexical/html",
     "@lezer/highlight",
     "@lumino/disposable",
-    "@primer/react-brand",
     "@toon-format/toon",
     "@datalayer/agent-runtimes",
     "ansi-to-html",
